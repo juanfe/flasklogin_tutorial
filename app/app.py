@@ -30,10 +30,13 @@ def signup():
         return render_template('signup.html', form=form)
     elif request.method == 'POST':
         if form.validate_on_submit():
-            if 'user already exist in database':
+            if User.query.filter_by(email=form.email.data).first():
                 return "Email address already exists"
             else:
-                return "Will create user here"
+                newuser = User(form.email.data, form.password.data)
+                db.session.add(newuser)
+                db.session.commit()
+                return "User created!!!"
         else:
             return "Form didn't validate"
 
